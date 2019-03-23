@@ -24,6 +24,10 @@ class MainActivity : AppCompatActivity() {
     setContentView(R.layout.activity_main)
     tasks = ArrayList()
     getTasks()
+
+    btnAddTask.setOnClickListener {
+      addTask(TaskEntity(name = etTask.text.toString()))
+    }
   }
 
   fun getTasks() {
@@ -47,19 +51,17 @@ class MainActivity : AppCompatActivity() {
 
 
   fun addTask(task:TaskEntity){
-
     doAsync {
       val id = MisNotasApp.database.taskDao().addTask(task)
-        val recoveryTask = MisNotasApp.database.taskDao().getTaskById(id)
-          uiThread {
-            tasks.add(recoveryTask)
-            adapter.notifyItemInserted(tasks.size)
-            clearFocus()
-            hideKeyboard()
+      val recoveryTask = MisNotasApp.database.taskDao().getTaskById(id)
+      uiThread {
+        tasks.add(recoveryTask)
+        adapter.notifyItemInserted(tasks.size)
+        clearFocus()
+        hideKeyboard()
       }
-        }
     }
-
+  }
 
   fun updateTask(task: TaskEntity) {
     doAsync {
